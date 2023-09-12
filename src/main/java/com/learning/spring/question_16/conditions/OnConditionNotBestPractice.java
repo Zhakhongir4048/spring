@@ -1,14 +1,13 @@
 package com.learning.spring.question_16.conditions;
 
-import com.learning.spring.question_16.conditions.annotations.ConditionalOnHealth;
-import org.springframework.boot.autoconfigure.condition.AllNestedConditions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.NoneNestedConditions;
 
 import static org.springframework.context.annotation.ConfigurationCondition.ConfigurationPhase.REGISTER_BEAN;
 
-public class OnConditionBestPractice extends AllNestedConditions {
+public class OnConditionNotBestPractice extends NoneNestedConditions {
 
-    public OnConditionBestPractice() {
+    public OnConditionNotBestPractice() {
         super(REGISTER_BEAN);
     }
 
@@ -22,10 +21,6 @@ public class OnConditionBestPractice extends AllNestedConditions {
 
     @ConditionalOnProperty(value = "tdd", havingValue = "true")
     public static class Tdd {
-    }
-
-    @ConditionalOnHealth
-    public static class OnConditionHealth {
     }
 
 }

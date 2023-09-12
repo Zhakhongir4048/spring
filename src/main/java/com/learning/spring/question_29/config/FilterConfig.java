@@ -1,4 +1,4 @@
-package com.learning.spring.question_29;
+package com.learning.spring.question_29.config;
 
 import com.learning.spring.question_29.filters.RequestResponseLoggingFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

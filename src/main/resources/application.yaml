@@ -16,5 +16,7 @@ spring:
         use_sql_comments: true
         dialect: "org.hibernate.dialect.PostgreSQLDialect"
 
+health: true
+
 custom:
   included: true

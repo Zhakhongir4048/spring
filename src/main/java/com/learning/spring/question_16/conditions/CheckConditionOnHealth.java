@@ -3,7 +3,7 @@ package com.learning.spring.question_16.conditions;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
-@ConditionOnHealth
+@ConditionalOnHealth
 @Component
 public class CheckConditionOnHealth {
 

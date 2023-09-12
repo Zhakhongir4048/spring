@@ -8,5 +8,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Conditional(OnConditionHealth.class)
-public @interface ConditionOnHealth {
+public @interface ConditionalOnHealth {
 }

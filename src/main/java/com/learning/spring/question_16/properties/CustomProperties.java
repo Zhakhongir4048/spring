@@ -1,4 +1,4 @@
-package com.learning.spring.question_16;
+package com.learning.spring.question_16.properties;
 
 import lombok.Getter;
 import lombok.Setter;

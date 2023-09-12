@@ -1,4 +1,4 @@
-package com.learning.spring.question_16;
+package com.learning.spring.question_16.check_conditionals;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

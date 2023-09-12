@@ -1,4 +1,4 @@
-package com.learning.spring.question_16;
+package com.learning.spring.question_16.check_conditionals;
 
 import com.learning.spring.question_14.ValueTest;
 import jakarta.annotation.PostConstruct;

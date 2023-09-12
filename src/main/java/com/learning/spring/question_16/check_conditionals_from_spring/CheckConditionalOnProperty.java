@@ -1,4 +1,4 @@
-package com.learning.spring.question_16.check_conditionals;
+package com.learning.spring.question_16.check_conditionals_from_spring;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

@@ -57,3 +57,30 @@ public static PropertySourcesPlaceholderConfigurer configurer() {
     return new PropertySourcesPlaceholderConfigurer();
 }
 _______________________________
+3) Создание кастомных FactoryBean (только для XML-конфигурации).
+FactoryBean - это generic интерфейс, которому можно делегировать процесс создания бинов типа.
+В те времена, когда конфигурация была исключительно в xml, разработчикам был необходим механизм с помощью
+которого они бы могли управлять процессом создания бинов. Именно для этого и был сделан этот интерфейс.
+Создадим фабрику, которая будет отвечать за создание всех бинов типа - Color.
+
+public class ColorFactory implements FactoryBean<Color> {
+    @Override
+    public Color getObject() throws Exception {
+        Random random = new Random();
+        return new Color(random.nextInt(), random.nextInt(), random.nextInt());
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return Color.class;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return false;
+    }
+}
+
+Теперь создания бина типа Color.class будет делегироваться ColorFactory, у которого при каждом создании
+нового бина будет вызываться метод getObject.
+Для тех кто пользуется JavaConfig, этот интерфейс будет абсолютно бесполезен.

@@ -1,0 +1,59 @@
+Жизненный цикл бинов.
+1) Парсирование конфигурации и создание BeanDefinition.
+- Xml конфигурация - ClassPathXmlApplicationContext("context.xml")
+- Конфигурация через аннотации с указанием пакета для сканирования - AnnotationConfigApplicationContext(
+"package.name")
+- Конфигурация через аннотации с указанием класса (или массива классов) помеченного аннотацией @Configuration
+- AnnotationConfigApplicationContext(JavaConfig.class). Это способ конфигурации называется JavaConfig
+- Groovy конфигурация - GenericGroovyApplicationContext("context.groovy").
+
+Если заглянуть внутрь AnnotationConfigApplicationContext, то можно увидеть два поля.
+private final AnnotatedBeanDefinitionReader reader;
+private final ClassPathBeanDefinitionScanner scanner;
+
+ClassPathBeanDefinitionScanner сканирует указанный пакет на наличие классов помеченных аннотацией
+@Component(или её алиаса). Найденные классы парсируются и для них создаются BeanDefinition. Чтобы было
+запущено сканирование, в конфигурации должен быть указан пакет для сканирования @ComponentScan({"package.name"}).
+
+AnnotationBeanDefinitionReader работает в несколько этапов.
+1. Первый этап - это регистрация всех @Configuration для дальнейшего парсирования. Если в конфигурации
+используются Conditional, то будут зарегистрированы только те конфигурации, для которых Condition вернёт true.
+2. Второй этап - это регистрация BeanDefinitionRegistryPostProcessor, который при помощи класса
+ConfigurationClassPostProcessor парсирует JavaConfig и создаёт BeanDefinition.
+
+Цель первого этапа - это создание всех BeanDefinition. BeanDefinition - это специальный интерфейс, через
+который можно получить доступ к метаданным будущего бина. В зависимости от того, какая у вас конфигурация,
+будет использоваться тот или иной механизм парсирования конфигурации.
+
+BeanDefinition - это набор метаданных будущего бина, макет, по которому нужно будет создавать бин
+в случае необходимости. То есть для каждого бина создаётся свой BeanDefinition, в котором хранится
+описание того, как создавать и управлять этим конкретным бином. Проще говоря, сколько бинов в программе -
+столько и объектов BeanDefinition, их описывающих.
+Сюда входит: из какого класса бин надо создать, scope, установлена ли ленивая инициализация, нужно ли
+перед данным бином инициализировать другой, init и destroy методы, зависимости.
+Все полученные BeanDefinition`ы складываются в ConcurrentHashMap, в которой ключом является имя бина,
+а объект - сам BeanDefinition.
+
+При старте приложения в IoC контейнер попадут бины, которые имеют scope Singleton (устанавливается по-умолчанию),
+остальные же создаются, тогда когда они нужны.
+_______________________________
+2) Настройка созданных BeanDefinition.
+Есть возможность повлиять на бины до их создания, иначе говоря мы имеем ввиду доступ к метаданным класса.
+Для этого существует специальный интерфейс BeanFactoryPostProcessor, реализовав который, мы получаем доступ
+к созданным BeanDefinition и можем их изменять. В нём один метод.
+Метод postProcessBeanFactory принимает параметром ConfigurableListableBeanFactory. Данная фабрика содержит
+много полезных методов, в том числе getBeanDefinitionNames, через который мы можем получить все
+BeanDefinitionNames, а уже потом по конкретному имени получить BeanDefinition для дальнейшей обработки
+метаданных.
+Разберём одну из родных реализаций интерфейса BeanFactoryPostProcessor. Обычно, настройки подключения к базе
+данных выносятся в отдельный property файл, потом при помощи PropertySourcesPlaceholderConfigurer они
+загружаются и делается inject этих значений в нужное поле. Так как inject делается по ключу, то до создания
+экземпляра бина нужно заменить этот ключ на само значение из property файла. Эта замена происходит в классе,
+который реализует интерфейс BeanFactoryPostProcessor.
+Название этого класса - PropertySourcesPlaceholderConfigurer. Он должен быть объявлен как static
+
+@Bean
+public static PropertySourcesPlaceholderConfigurer configurer() {
+    return new PropertySourcesPlaceholderConfigurer();
+}
+_______________________________

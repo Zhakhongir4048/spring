@@ -2,12 +2,13 @@ package com.learning.spring.question_20;
 
 import org.springframework.beans.factory.FactoryBean;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Random;
 
 public class ColorFactory implements FactoryBean<Color> {
+
     @Override
-    public Color getObject() throws Exception {
+    public Color getObject() {
         Random random = new Random();
         return new Color(random.nextInt(), random.nextInt(), random.nextInt());
     }
